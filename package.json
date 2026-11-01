@@ -1,0 +1,33 @@
+{
+  "name": "radar-eletrico-sp",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "dev": "pnpm --filter @radar/web dev",
+    "build": "pnpm --filter @radar/web build",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "format:check": "prettier --check .",
+    "db:generate": "prisma generate --schema packages/database/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema packages/database/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.1",
+    "@playwright/test": "1.57.0",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.1",
+    "eslint-config-next": "16.4.0",
+    "prettier": "3.6.2",
+    "prisma": "6.19.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.46.4",
+    "vitest": "4.0.9"
+  }
+}

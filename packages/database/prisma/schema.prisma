@@ -1,0 +1,15 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+enum Role { OWNER ADMIN MEMBER VIEWER }
+enum PipelineStage { NOVO EM_ANALISE PRIORIZADO CONTATO_PLANEJADO CONTATO_REALIZADO CONVERSA REUNIAO PROPOSTA GANHO PERDIDO PAUSADO NAO_CONTATAR }
+enum AuditAction { CREATE UPDATE DELETE EXPORT IMPORT ACCESS }
+
+model User { id String @id @default(cuid()) email String @unique name String? memberships Membership[] createdAt DateTime @default(now()) }
+model Workspace { id String @id @default(cuid()) name String members Membership[] companies Company[] auditLogs AuditLog[] createdAt DateTime @default(now()) }
+model Membership { id String @id @default(cuid()) userId String workspaceId String role Role @default(MEMBER) user User @relation(fields:[userId],references:[id],onDelete:Cascade) workspace Workspace @relation(fields:[workspaceId],references:[id],onDelete:Cascade) @@unique([userId,workspaceId]) }
+model Company { id String @id @default(cuid()) workspaceId String legalName String tradeName String? cnpj String status String cnae String city String state String source String collectedAt DateTime confidence Int @default(0) privacyPurpose String privacyLegalBasis String pipelineStage PipelineStage @default(NOVO) doNotContact Boolean @default(false) deletedAt DateTime? workspace Workspace @relation(fields:[workspaceId],references:[id],onDelete:Restrict) leads Lead[] @@unique([workspaceId,cnpj]) @@index([workspaceId,pipelineStage]) }
+model Lead { id String @id @default(cuid()) companyId String score Int @default(0) scoreVersion String? nextActionAt DateTime? company Company @relation(fields:[companyId],references:[id],onDelete:Cascade) interactions Interaction[] tasks FollowUp[] }
+model Interaction { id String @id @default(cuid()) leadId String type String note String? performedAt DateTime @default(now()) lead Lead @relation(fields:[leadId],references:[id],onDelete:Cascade) }
+model FollowUp { id String @id @default(cuid()) leadId String type String dueAt DateTime status String @default("OPEN") context String? lead Lead @relation(fields:[leadId],references:[id],onDelete:Cascade) @@index([dueAt,status]) }
+model AuditLog { id String @id @default(cuid()) workspaceId String actorId String? action AuditAction entity String entityId String? reason String? metadata Json? createdAt DateTime @default(now()) workspace Workspace @relation(fields:[workspaceId],references:[id],onDelete:Restrict) @@index([workspaceId,createdAt]) }

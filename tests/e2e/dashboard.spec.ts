@@ -1,0 +1,2 @@
+import { expect, test } from "@playwright/test";
+test("abre o painel e a ficha Empresa 360°", async ({ page }) => { await page.goto("/"); await expect(page.getByRole("heading", { name: "Hoje" })).toBeVisible(); await page.getByText("Aurora Elétrica", { exact: true }).first().click(); await expect(page.getByText("Score explicável")).toBeVisible(); await expect(page.getByText("Dados de demonstração.")).toBeVisible(); });
